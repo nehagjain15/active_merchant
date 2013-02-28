@@ -41,6 +41,10 @@ module ActiveMerchant #:nodoc:
         commit 'DoExpressCheckoutPayment', build_sale_or_authorization_request('Sale', money, options)
       end
 
+      def store(token, options = {})
+        commit 'CreateBillingAgreement', build_create_billing_agreement_request(token, options)
+      end
+
       def reference_transaction(money, options = {})
         requires!(options, :reference_id, :payment_type, :invoice_id, :description, :ip)
 
@@ -138,6 +142,18 @@ module ActiveMerchant #:nodoc:
               xml.tag! 'n2:CallbackTimeout', options[:callback_timeout] unless options[:callback_timeout].blank?
               xml.tag! 'n2:CallbackVersion', options[:callback_version] unless options[:callback_version].blank?
             end
+          end
+        end
+
+        xml.target!
+      end
+
+      def build_create_billing_agreement_request(token, options = {})
+        xml = Builder::XmlMarkup.new :indent => 2
+        xml.tag! 'CreateBillingAgreementReq', 'xmlns' => PAYPAL_NAMESPACE do
+          xml.tag! 'CreateBillingAgreementRequest', 'xmlns:n2' => EBAY_NAMESPACE do
+            xml.tag! 'n2:Version', API_VERSION
+            xml.tag! 'Token', token
           end
         end
 
