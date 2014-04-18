@@ -104,6 +104,7 @@ module ActiveMerchant #:nodoc:
           xml.tag! 'SetExpressCheckoutRequest', 'xmlns:n2' => EBAY_NAMESPACE do
             xml.tag! 'n2:Version', API_VERSION
             xml.tag! 'n2:SetExpressCheckoutRequestDetails' do
+              xml.tag! 'n2:OrderTotal', localized_amount(money, currency_code), 'currencyID' => currency_code
               xml.tag! 'n2:ReturnURL', options[:return_url]
               xml.tag! 'n2:CancelURL', options[:cancel_return_url]
               if options[:max_amount]
